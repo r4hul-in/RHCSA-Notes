@@ -1,0 +1,126 @@
+SELinux
+-------
+   |
+   |- 1. System security 
+         |- policy [targeted]      
+         |_ enabled 
+         |     |- Enforcing -> 1
+         |     |       |- restriction of services in background
+         |     |
+         |     |- Permissive -> 0
+         |	          |- allow target policy
+         |     
+         |_ diabled
+              |_ /etc/selinux/config
+                         |_ SELINUX=disabled
+
+i) Current mode
+        |_ getenforce
+        |_ setenforce 0
+ 
+ii) Config mode
+        |_ vim /etc/selinux/config
+
+
+2. Port security
+
+ # semanage port -l | grep servicename
+ 
+ ## relabling or securing the port
+  
+  # semanage port -at service_type -p tcp #portnumber
+  
+ ## Example - Making selinux listen port 922 as ssh
+  
+  - Listing services and looking for ssh service_type
+   
+   # semanage port -l | grep ssh
+   
+  - Relablig ssh 22 as ssh 922
+  
+   # semanage port -at ssh_port_t -p tcp 922
+   
+  - Editing ssh config in order to run it on port 922
+  
+   # vim /etc/ssh/sshd_config
+   
+     Port 922
+     
+  - Restarting ssh service
+   # systemctl restart sshd
+  
+  - Allowing port 922 in firewall
+   # firewall-cmd --permanent --add-port 922/tcp
+  
+  - Reloading the firewall 
+   # firewall-cmd --reload
+  
+   # ssh root@server0 -p 922
+   
+  ## Reverting the changes
+  
+   # semanage port -dt ssh_port_t -p tcp 922
+   
+   # firewall-cmd --permanent -remove-port=922/tcp
+   
+   # firewall-cmd --reload
+   
+   # systemctl restart sshd
+   
+3. File context relable security
+
+ # ll -Zd /folder
+ 
+ - Changing file context temprorarily
+  
+   # chcon -Rt httpd_sys_content_t /folder
+   
+   # restrorecon -RFv /folder
+   
+ - Changing file context permanently
+ 
+   # semanage fcontext -at httpd_sys_content_t '/folder(/.*)?'
+   
+   # restorecon -RFv /folder 
+     
+  ## Example
+  
+   # yum install elinks httpd
+    
+   # systemctl enable httpd
+   
+   # vim /var/www/html/index.html
+   
+     hello world
+     
+   # elinks localhost
+    
+   # rm /var/www/html/index.html
+     
+   
+   # vim /etc/httpd/conf/httpd.conf
+      <virtualhost *=80>
+           servername server0.example.com
+           document root /custom
+      </virtualhost>
+   
+   # vim /custom/index.html
+   
+   # semanage fcontext -at httpd_sys_content_t '/custom(/.*)?'
+   
+   
+4. Boolean Security
+
+## Allowing ftpd access through httpd
+
+ # systemctl start vsftpd
+ 
+ # systemctl restart vsftpd
+ 
+ # firewall-cmd --permanent --add-service=ftp
+ 
+ # firewall --reload
+ 
+ # getsebool -a | grep ftp
+ 
+ # setsebool -P httpd_can_connect_ftp on      
