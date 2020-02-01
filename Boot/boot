@@ -1,0 +1,132 @@
+Boot Process
+------------
+
+
+  KERNEL ENVIRONMENT
+  
+1. BIOS [BASIC INPUT OUTPUT SYSTEM]
+    |
+    |- POST [POWERON SELF TEST]
+    |
+    |- HARDWARE INTIALIZE
+    |
+    |- F1-F12 
+
+2. MBR [MASTER BOOT RECORD]
+    |
+    |- Disk Initialize
+    |
+    |- 1 unit sector = 512 bytes
+    |
+    |- default boot loader
+
+3. GRUB [Grand Unified Bootloader]
+    |
+    |- default boot loader [multi-boot]
+
+4. KERNEL
+    |
+    |- Communicator b/w h/w & s/w
+    |
+    |- initrd
+    |     |_ temp. file systems are mounted
+    |
+    |- initramfs
+          |_ system kernel image
+          
+          
+5. systemd
+    |_ init
+        |
+        |- init 0 halt.target
+        |
+        |- init 1 single-user.target
+        |
+        |- init 2 multi-user.target without network
+        |
+        |- init 3 multi-user.target with network
+        |
+        |- init 4 unused
+        |
+        |- init 5 graphical.target
+        |
+        |- init 6 reboot.target
+     
+    |_ runlevel
+        |
+        |- 3. multi-user.target
+        |
+        |- 5. graphical.target
+        
+        
+
+Breaking the password
+
+ # id student
+
+wheel - sudo group
+
+1. If you have access to sudo
+
+  # sudo -i
+  
+2. No access to sudo
+
+  * Reboot the system
+  
+  * Keep tapping TAB to make menu show
+  
+  * kernel - initrd - init ram disk
+  
+  * Press END to go on end of line
+  
+  * console=tty1 rd.break
+  
+  # mount -o remount,rw /sysroot
+  
+  # chroot /sysroot
+  
+  # passwd root
+  
+  # touch /.autorelabel
+  
+  ctrl+d
+  
+  ctrl+d 
+  
+Setting grub password
+----------------------
+ # grub2-mkpasswd-pbkdf2
+ 
+ * Copy passwd
+ 
+ # vim /boot/grub2/grub.cfg
+ 
+  
+  ### BEGIN /etc/grub.d/10 linux ###
+  
+  set superusers="root"
+  export superusers
+  pbkdf2 root grub.pbkdf2.sha512.10000.2FDE57BD8952968430FE0BB280B23F1EA41224465555075D0F4AF5289A021D5D3E7208A97A00087F6CBA0B90923B07513E73D983A2C8595F09BB308A00C081BB.15904885FD57596E963D42BCBD387EE6E857902581A6E4233348035D8D628C367596575C7E7410F0E2BFC618B92DADE2EF3A32CFAEA4982FF2A8E59964602E1B
+  
+  
+                                                   OR
+                                                   
+   # grub2-setpasswd
+                                                   
+Reverting changes
+-----------------
+
+  # grub2-mkconfig -o /boot/grub2/grub.cfg
+  
+
+Boot repair 
+-----------
+
+  * Reboot the system
+  
+  * Keep tapping TAB to make menu show
+  
+  * Press END to go on end of line
+  
+  * systemd.unit=emergency.target  
