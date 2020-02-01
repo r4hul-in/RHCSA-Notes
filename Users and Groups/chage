@@ -1,0 +1,49 @@
+Password Policy
+---------------
+
+ # useradd adam
+ 
+ # chage -l adam
+ 
+Last password change					: Aug 07, 2019
+Password expires				       	: never
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 99999
+Number of days of warning before password expires	: 7
+
+ ## Password expires : Self explanatory
+ ## Password inactive : States how long an account could be used after password has expired. After that account is locked.
+ ## Account expires : 
+ 
+### maximum day		
+
+ # chage -M 10 adam
+     |- chage -M <days> username
+     
+### minimum days
+
+ # chage -m 10 adam
+     
+### Password inactive 
+ 
+ # chage -I 3 adam
+     |- chage -I <days> username
+ 
+### Account expiry date
+ 
+ # chage -E 2019-08-10 adam
+     |- chage -W YYY-MM-DD username
+     
+### Warn days
+
+ # chage -W 7 adam
+ 
+### days
+
+ # chage -d 0 adam
+ 
+### list
+
+ # chage -l adam
