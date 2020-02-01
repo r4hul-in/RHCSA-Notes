@@ -1,0 +1,107 @@
+LVM - Logical Volume Manager
+----------------------------
+ |
+ |- Create
+ | 
+ |- Reduce
+ |
+ |- Rename
+ |
+ |- Snapshot
+ |
+ |- Delete
+ |
+ |- Mirror
+   
+   
+                                            ____________
+                                           |Volume Group |
+                                            -------------
+                                                  |
+                                            Physical Volume
+                                             |          |
+                                           /dev/vdb1  /dev/vdb2    
+                                           
+                                           
+                                           Physical Extent = 4 MB
+Size = exact
+Extent = ratio
+
+PE = 4 MB
+
+Size = 3072
+
+LE = 3072/4 = 768 
+
+LE = 2048/4 = 512
+              ---
+              1280
+                -2
+              ----
+              1274
+              
+/dev/vdb1 = 768 extent / 3072 M
+/dev/vdb2 = 512 extent / 2048 M
+              
+ -L = exact size
+ 
+ -l = extent                
+ 
+/dev/vdb1 - 1 extent
+/dev/vdb2 - 1 extent
+---------------------------------------------------------------------------------------------------------------------------
+
+ # lsblk
+ 
+ # fdisk /dev/vdb1
+ 
+ # pvcreate /dev/vdb1
+ 
+ # pvcreate /dev/vdb2
+ 
+ # pvs
+ 
+ # vgcreate "datacenter" /dev/vdb1 /dev/vdb2
+ 
+ # vgdisplay /dev/datacenter
+ 
+ # vgs
+ 
+ # lvcreate -L 4G -n "lv01" datacenter
+ 
+ # vgs
+ 
+ # lvcreate -l 254 -n "lv02" datacenter
+ 
+ # mkfs.xfs /dev/datacenter/lv01
+ 
+ # mkfs.xfs /dev/datacenter/lv02
+ 
+ # mkdir /mnt/{m1,m2}
+ 
+ # mount /dev/datacenter/lv01 /mnt/m1
+ 
+ # mount /dev/datacenter/lv02 /mnt/m2
+ 
+ # vim /etc/fstab
+ 
+ /dev/datacenter/lv01 /mnt/m1 xfs defaults 0 0 
+ /dev/datacenter/lv02 /mnt/m2 xfs defaults 0 0
+ 
+ # mount -a
+ 
+ 
+Removing
+--------
+
+ - Unmount
+ 
+ - Remove entry from fstab
+ 
+ # lvremove /dev/datacenter/lv01
+ 
+ # lvremove /dev/datacenter/lv02
+ 
+ # vgremove /dev/datacenter
+ 
+ # pvremove /dev/vdb{1,2}
