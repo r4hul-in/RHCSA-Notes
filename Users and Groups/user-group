@@ -1,0 +1,220 @@
+Managing Local Linux Users and Groups
+
+Group?
+ - collection of users
+ - At least two or more - One user is talking to two or more person simultaneously 
+ 
+ When we create a user, it comes with a user itself and a group.
+ 
+ user + group
+          |
+          |
+          |
+          |-- Primary Group
+          |   -------------
+          |   
+          |    - Hence, we can say only one group can exist.
+          |    - Change
+          |
+          |-- Secondary Group
+          |   ---------------
+          |   
+          |    - It is also known as supplementary group.
+          |    - Two or more group can exist.
+          |    - Add
+ 
+ 
+## Users
+ 
+  - operate
+  - manage
+ 
+When we create a user, it comes with its own ID.
+ 
+ # id root
+ uid=0(root) gid=0(root) groups=0(root)
+ 
+Types of users
+ --------------
+ 
+  1. root - 0
+  2. system users - 1 to 999
+  3. local users - 1000 to 60000
+  
+ Creating 60000 user in a system isn't feasible, therefore, ldap and active directory is used.
+  
+--------------------------------------------------------
+
+### User's account information
+ 
+ # cat /etc/passwd
+
+sam:x:1001:1000:admin user:/home/sam:/bin/bash
+
+user:pass:uid:gid:gecos:home-dir:shell
+ 
+### Group information
+
+ # cat /etc/groups
+ 
+sam:x:1001:
+user:pass:group:
+ 
+### Password and policy information
+
+ # cat /etc/shadow
+ 
+### Default shell provider
+    
+ # ls /etc/skel
+                1 .bashrc -> permission
+                2 .bash_profile -> loads .bashrc file
+                3 .bash_history
+                4 .bash_logout
+                 
+### Default shell script
+
+  # cat /etc/bashrc
+  # cat /etc/profile  
+  
+### User's mail directory
+ 
+ # ls /var/spool/mail/username     
+ 
+--------------------------------------------------------- 
+### Clear history
+
+ # history -c
+ 
+### Finding file created when we create a useradd
+
+ # useradd sam
+ # find / -user sam
+ 
+### Deleting a user and it's home dir
+ 
+ # userdel sam
+ 
+ # userdel -r sam
+ -r deletes user files in home dir as well.
+
+### To know encryption algorithm
+
+ # passwd -S root
+ 
+### Change age
+ 
+ # chage
+ 
+### Changing display username or gecos
+
+ # usermod -c "Desired gecos" username
+ 
+### Automatic Login - Remove passwd from shadow
+
+ # vim /etc/shadow
+ 
+### Deleting passwd
+
+ # passwd -d username
+ 
+### Set passwd
+
+ # passwd username
+ 
+ - Until you set passwd of a user, it wouldn't show in gdm or login screen.
+
+### Locking a user
+
+ # usermod -L username
+ 
+ - Locked user isn't shown in login screen.
+ - Root can login into a locked user.
+ 
+### Unlocking a username
+ 
+ # usermod -U username
+
+### Preventing login into a user irrespective of whoever is trying to log in, even root.
+
+ # usermod -s /sbin/nobody username
+ 
+### Reverting nologin changes
+
+ # usermod -s /bin/bash username
+ 
+### Changing user ID - uid
+
+ # id username
+ # usermod -u 2019 username
+
+### Changing group ID - gid
+
+ # groupmod -g 2019 username
+ 
+### changing primary group
+  
+  # usermod -g new_primary_group username
+       |- usermod -g ai sam
+
+### replacing adding secondary group
+
+  # usermod -G new_group username
+  
+### adding another group
+
+  # usermod -aG group1,group2 username
+  
+### deleting secondary - Same as replacing command since ther is no deletion command
+
+ # usermod -G group1,group2 username
+ 
+### Editing,changing (deleting),replacing, and adding group by editing /etc/group
+
+ # vim /etc/group
+ 
+### Changing username
+
+ # usermod -l new_name old_name
+      |- usermod -l redhat sam
+               
+ # id redhat
+ 
+### deleting secondary groups
+
+ # usermod -G sam sam
+ 
+ # groupdel groupname 
+
+-----------------------------
+
+ # useradd sam
+ # groupadd python
+ # groupadd linux
+ # groupadd ai
+ 
+ # id sam
+ 
+ # usermod -g python sam
+ 
+ # usermod -g sam sam
+ 
+ # usermod -aG python,linux,ai san
+ 
+ # usermod -G python,ai sam
+ 
+ # id sam
+ 
+ # usermod -G sam sam
+ 
+ # groupdel python
+ 
+ # groupdel ai
+ 
+ # groupdel linux
+ 
+ # userdel -r sam
+
+----------------------------
+
+ # echo redhat:password | chpasswd
