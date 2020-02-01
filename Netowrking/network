@@ -1,0 +1,82 @@
+Network IPv4 
+	----
+	DHCP or STATIC
+	: nmcli 
+	: nmtui 
+	
+	4 octet 
+	decimal
+
+	0.0.0.0  -  255.255.255.255
+	|
+	8.8.8.8 = /32-bit 
+	---------------------
+classes: scope : global 
+	
+	   A broadcast  0-126    10.0.0.0  255.0.0.0     /8 
+	   B multicast 128-191  172.16.0.0 255.255.0.0   /16
+free * C unicast   192-223  192.168.0.0 255.255.255.0 /24
+	   D --	       224-239	-------- /32
+ 	   E -- 	   240-255	-------- /32
+
+0.0.0.0 - localhost
+127.0.0.0 or 127.0.0.1 - loopback (for testing puposes only. For instance, pinging)
+
+unicast - It is essentially used for consumer grade modile broadband or internet. And it is free to allocated in public network. 
+
+Free: 192.168.0.0 - 192.168.0.255
+
+Private or Paid: 192.169.0.0 - 192.168.39.255 
+
+Subnetting
+----------
+
+-------------------------------------------------------------------
+Subnet      | 1   | 2   | 4   | 8   | 16  | 32  | 64  | 128 | 256 |
+------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+Host	     	| 256 | 128 | 64  | 32  | 16  | 8   | 4   | 2   | 1   | 
+------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+Subnet Mask | /24 | /25 | /26 | /27 | /28 | /29 | /30 | /31 | /32 |
+-------------------------------------------------------------------
+
+* No of usable hosts = Hosts - 2
+* 2 hosts are reserved for broadcast (end) and network ID (beginning)
+
+---------------------------------------------------------------------
+
+# How to create, delete, and edit network connection.
+
+In short, we have two tools at our disposal i.e. 1) nmtui - ncurses based application to interact with NetworkManager and 2) nmcli - CLI based application to interact with nm.
+
+
+
+	nmcli con show 
+
+dhcp - auto assigns IP/Subnet masks
+-----------------------------------
+	nmcli con add con-name inet ifname ens33 type ethernet 		
+	nmcli con up inet 
+
+STATIC - Self explainatory
+-------------------------- 
+	nmcli con mod inet ipv4.method manual ipv4.addresses 192.168.0.1/24 connection.autoconnect yes 
+	nmcli con up inet 
+	ip addr show ens33 
+
+hostname: 
+	hostnamectl set-hostname centos.lab.example.com 	
+	exec bash
+	
+hosts:
+	vim /etc/hosts 
+	192.168.0.1   centos centos.lab.example.com
+
+#By adding hostname or nickname to hosts, one can easily call a machine without typing its IP address which is cumbersome.
+
+ping: 
+	ping centos -c3 
+ 
+
+* Here, option -c signifies how many times its going to ping before closing itself.
+
+* The same thing could be achieved by editing /etc/sysconfig/network-scripts/ifcfg-foo
