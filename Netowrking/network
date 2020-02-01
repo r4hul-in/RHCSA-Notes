@@ -13,11 +13,11 @@ Network IPv4
 	---------------------
 classes: scope : global 
 	
-	   A broadcast  0-126    10.0.0.0  255.0.0.0     /8 
-	   B multicast 128-191  172.16.0.0 255.255.0.0   /16
-free * C unicast   192-223  192.168.0.0 255.255.255.0 /24
-	   D --	       224-239	-------- /32
- 	   E -- 	   240-255	-------- /32
+	A broadcast  0-126    10.0.0.0  255.0.0.0     /8 
+	B multicast 128-191  172.16.0.0 255.255.0.0   /16
+free *	C unicast   192-223  192.168.0.0 255.255.255.0 /24
+	D --	    224-239		-------- /32
+ 	E -- 	    240-255		-------- /32
 
 0.0.0.0 - localhost
 127.0.0.0 or 127.0.0.1 - loopback (for testing puposes only. For instance, pinging)
