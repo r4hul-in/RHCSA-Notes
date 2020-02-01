@@ -1,0 +1,71 @@
+VDO (Virtual Disk Optimizer)
+
+ |
+ |- Deduplication
+ |
+ |- Compression
+ |
+ |- Thin Provisioning
+
+* While hosting a VM or container, use logical size 10 times of physical size i.e. 1:10
+
+* For object storage, use logical size 3 times of physical size i.e. 1:3
+
+* Block device smaller than 4G cannot be used
+
+1) Installing VDO
+
+   # yum install vdo kmod-vdo -y
+   
+   # systemctl enable vdo.service
+
+   # systemctl start vdo.service
+
+2) Creating a VDO
+
+   # vdo create --name=vdotest --device=/dev/sdb --vdoLogicalSize=200G
+
+   # mkfs.xfs -K /dev/mapper/vdotest
+
+     -K Do not discard block file creating the Filesystem
+
+   # udevadm settle
+           OR
+   # partprobe
+
+   # mkdir /mnt/vdo
+
+   # mount /dev/mapper/vdotest /mnt/vdo
+
+   # df -h
+
+   # vdostats --hu
+ 
+
+ # umount /mnt/vdo
+
+ # vdo stop --name=vdotest
+
+ # vdo deactivate --name=vdotest
+
+ # vdo activate --name=vdotest
+
+ # vdo status --name=vdotest	
+
+ # vdo disableDeduplication --name=vdotest
+
+ # vdo disableCompression --name=vdotest
+
+ # vdo enableCompression --name=vdotest
+
+ # vdo growLogical --name=vdotest --vdoLogicalSize=250G
+
+ # vdo growPhyscial --name=vdotest
+
+ # vdo remove --force --name=vdotest
+
+
+
+* udevadm settle
+
+* dmsetup remove vdotest
