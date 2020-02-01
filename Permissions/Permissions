@@ -1,0 +1,100 @@
+Permissions
+-----------
+    |
+    |- defaults [umask]
+    |- normal permissions [chmod]
+    |- sudo previleges [sudo]
+    |- individual permissions [setacl/gerfacl]
+
+
+### Permissions
+    
+    
+    read     [r] = 4
+    write    [w] = 2
+    execute  [x] = 1
+    no perm. [-] = 0
+    
+ user   group   others                           
+  u       g       o                             
+  
+  
+ dwrxr-xr-x.
+   7   5  5
+  
+                    d = directory                         
+                   . = normal             
+                    
+0 ---
+1 --x
+2 -w-
+3 -wx
+4 r--
+5 r-x
+6 rw-
+7 rwx
+
+umask: default permissions
+--------------------------
+
+ # : 0022
+         dir/file : 755/644
+         dir/file : 775/664
+ $ : 0002
+ 
+ dir  = 777
+ file = 666
+ 
+                 |-- root (manager) -> # 0022
+                 |
+ sh (management)-|
+                 | 
+                 |-- user (employee) -> $ 0002
+                 
+                 
+### setting up umask - Only temprorary
+
+  # umask 0072
+  
+### Making umask changes permanent - locally
+
+ # vim .bashrc
+ 
+ umask 0072
+ 
+### Making umask changes permanent - globally 
+
+ # vim /etc/bashrc OR vim /etc/profile
+ 
+ if [ $UID -gt 199 ] && [ "`/usr/bin/id -gn`" = "`/usr/bin/id -un`" ]; then
+       umask 002
+    else   
+       umask 022
+    fi    
+    
+    
+ 
+ 
+ 
+### checking umask status
+
+ # umask -S
+ 
+normal permissions [chmod]
+--------------------------
+
+### changing normal permission of a file or directory
+ 
+ # chmod 700 folder
+ 
+- While changing permissions one need to define all three digits
+ 
+ # chmod o+rx folder
+ 
+ # chmod g+rx folder
+ 
+ # chmod u+rx folder
+ 
+ # chmod a+x file
+ 
+ # chmod a-x file
