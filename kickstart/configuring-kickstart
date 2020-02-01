@@ -1,0 +1,50 @@
+Kickstart
+---------
+
+## Install kickstart
+
+ # yum install system-config-kickstart
+ 
+## Configure kickstart from GUI tool and save it to home directory
+
+ # system-config-kickstart
+ 
+## Setup kickstart server - Assuming httpd server is already installed and firewall is configured
+
+ # cd /var/www/html
+ 
+ # mkdir kickstart
+ 
+ # cd kickstart/
+ 
+ # cp ~/anaconda-ks.cfg *
+ 
+## Edit ks file according to your needs - File attached
+
+ # vim anaconda-ks.cfg
+
+## Validate kickstart file syntax
+
+ # ksvalidator anaconda-ks.cfg
+ 
+## Restore Selinux context
+
+ # restorecon -RvF /var/www/html
+ 
+## Installing a RHEL instance with a kickstart file by virt-manager
+
+ # While booting from RHEL installation media press TAB at boot menu and add following option to boot option
+ 
+ # ks=http://192.168.100.1/kickstart/anaconda-ks.cfg
+ 
+ * Add ip=dhcp and/or ksdevice=<ifname> if necessary
+ 
+ * Remove quiet flag also in order to debug any problem if you might face
+ 
+ * Command to generate encrypted passwd
+   
+   # python -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())'
+   
+ * We can also use ftp - vsftpd and nfs and just putting ks file in installation media itself.
+  
+ * Generating encrypted passwd for standard user isn't need as of now. We call simply skip --iscrypted option and just add plaintext passwd in password=yournakedpasswd
