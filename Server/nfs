@@ -1,0 +1,48 @@
+mkdir /redhat
+
+vim /etc/exports
+
+/redhat    * (rw,sync)
+
+# exportfs -r
+
+# firewall-cmd --permanent --add-service={mounted,rpc-bin,nfs}
+
+# systemctl enable nfs-server ; systemctl start nfs-server
+
+# showmount -e
+
+# chcon -Rt public_content_t /redhat/
+
+# chown nfsnobody:nfsnobody /redhat/
+
+
+Removing nfs
+------------
+
+# systemctl stop nfs;systemctl stop nfs-server
+
+# vim /etc/exports
+
+Remove previous changes
+
+# exportfs -rav
+
+Desktop
+-------
+
+# showmount -e 172.15.0.11
+
+# mount -t nfs 172.25.0.11:/redhat/ /mnt
+
+# cd /mnt/
+
+# ls
+
+# touch files
+
+# ll
+
+# cd 
+
+# umount /mnt
