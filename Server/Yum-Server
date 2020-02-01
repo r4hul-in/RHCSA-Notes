@@ -1,0 +1,130 @@
+Virtualization
+--------------
+
+
+1. Installing CentOS/RHEL 7 first on base machine.
+
+2. Configure yum-server
+
+# mount /dev/cdrom /mnt
+
+# vi /etc/yum.repos.d/rhel-dvd.repo
+
+
+[rhel]
+enabled=1
+gpgcheck=0
+baseurl=file:///mnt
+name= yum server
+
+
+# yum repolist
+
+# yum install virt-viewer httpd* libvirt* virt-viewer
+
+Master server directory = /var/www/html/redhat/
+
+# vim /etc/yum.repos.d/rhel-dvd.repo
+
+[rhel]
+enabled=1
+gpgcheck=0
+baseurl=file:///var/www/html/redhat/
+name= yum server
+
+# firewall-cmd --permanent --add-service=http
+
+# firewall-cmd --reload
+
+# firewall-cmd --list-services
+ssh dhcpv6-client http
+
+# restorecon -RFv /var/www/html/
+
+# chmod 775 -R /var/www/html/ 
+
+# vi /etc/hosts
+
+172.25.0.10 server.master.com
+
+# systemctl restart httpd
+Important step
+
+3. Creating new VM from host we have just created. Proceed to installation as usual.
+
+# virt-manager
+
+# virsh list
+Shows only running instances
+
+# virsh list --all
+
+4. Setting up network from installation
+
+Hostname of new VM = server0.example.com
+
+IP = Choose whatever IP in same range
+
+DNS = IP of base machine
+
+Subnet = From base machine
+
+
+# vi /etc/yum.repos.d/rhel-dvd.repo
+
+
+[client]
+enabled=1
+gpgcheck=0
+baseurl=http://server.master.com/redhat/
+name= client server
+
+
+YUM Server 
+----------
+
+
+DVD -> Packages (RPM)
+          |
+          |__ Directory (Repodata) 
+                     |
+                     |__ Database (metadata) 
+                             |
+                             |__ Connectivity (repository) 
+                                       |
+                                       |__ /etc/yum.repos.d/name-can-be-anything.repo
+
+
+Misc
+----
+
+No root to host = An error caused by misconfigured firewall
+
+restorecon = restore context in SLinux
+
+Bridge is based upon physical connect, therefore, while creating a bridge, one should select ethernet connection and then, reboot the system.
+
+Always use sync command before unmount a parition.
+
+# sync; unmount /dev/sdXY
+
+SSH
+---
+
+# ssh root@172.25.0.11
+
+# ssh-keygen
+
+# ssh-copy-id student@172.25.0.11
+
+
+Creating snapshot of virtual machine
+
+# virsh snapshot-create-as server snap1
+
+Here, server is VM name and snap1 is snapshot name.
+
+# virsh	snapshot-revert server snap1
+
+
+Snapshot is stored in qcow2 extension.
