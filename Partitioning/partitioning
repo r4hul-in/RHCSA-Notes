@@ -1,0 +1,99 @@
+Disk Management / Partitioning
+------------------------------
+
+
+
+ Disk 
+ 
+ MBR (Master boot record)      GPT (GUID Partition Table)
+ 
+ - 32 bit					   - 64 bit
+
+ BIOS                          UEFI - Unified Extensible Firmware Interface
+ 
+ legacy mode                   secure-boot
+ --------------------------------------------
+ 
+ 
+ Master boot record                           GPT
+ 
+ Partition : 512 byte						4096 byte
+ 
+ 1. primary [1-4]                           1 - 128 primary
+
+extended 4 [entire]
+
+ 2. logical [15]
+ 
+ limit : 2TiB                               8 ZiB
+ 
+ fdisk        								gdisk
+ 
+ * logical partition starts from 5 
+----------------------------------------------------------------------
+
+
+   fdisk -l /dev/sdX
+   
+   fdisk /dev/sdX
+   
+  
+ p print partition
+ 
+ n new partition
+ 
+ d delete partition
+ 
+ w save & quit
+ 
+ q quit only
+ 
+ t type
+ 
+ 1. n
+ 2. select primary or secondary
+ 3. select partition number - stick to default by pressing enter
+ 4. first sector - press enter
+ 5. Last sector - +nG +nM +nK
+ 6. p - print the partition table
+ 
+ /dev/sdb1 - 10G
+ 
+ # mkfs.xfs /dev/sdb1
+ 
+ # mount /dev/sdb1 /mnt
+ 
+ # umount /mnt
+ 
+ # /etc/fstab
+ 
+   UUID=d454e70a-23b5-4ba0-af8b-5ca74e1d730c /mnt                   xfs     defaults        0 0
+   
+ # mount -a
+  
+ # reboot
+             
+             
+ 82 - swap
+ 
+ 83 - Linux
+ 
+ 8e - LVM
+ 
+ 5 - swap
+ 
+ 
+ Swap
+ ----
+ 
+  Create a 1 gb partition from fdisk
+  
+  # mkswap /dev/sdb2
+  
+  # vim /etc/fstab
+  
+  /dev/sdb2 swap swap defaults 0 0
+  
+  # swapon -a
+  
+  # free -h                                                    
