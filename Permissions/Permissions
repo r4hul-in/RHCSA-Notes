@@ -5,6 +5,7 @@ Permissions
     |- normal permissions [chmod]
     |- sudo previleges [sudo]
     |- individual permissions [setacl/gerfacl]
+    |- special permissions (Sticky bits, SGID, & SUID)
 
 
 ### Permissions
@@ -98,3 +99,31 @@ normal permissions [chmod]
  # chmod a+x file
  
  # chmod a-x file
+ 
+special permissions
+-------------------
+
+### Sticky bits
+
+* Users with write on the directory can only remove files that they own; they cannot remove or face saves to files owned by other users.
+
+ # chmod o+t directory
+
+### SGID
+
+* When it is applied on a directory, files newly created in the directory have their group owner set to match the group owner the directory.
+
+* And when it is applied on a file, the file executes as the group that owns it.
+
+# chmod g+s entity
+
+### SUID
+
+* File executes as the user that owns the file, not the user that ran the file. For example, commands like passwd.
+
+# chmod u+s <command>
+
+  
+Note: sticky : 1
+  	  SGID	 : 2
+  	  SUID	 : 4
